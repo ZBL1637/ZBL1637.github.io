@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛博词典：游戏场景如何塑造我们的"黑话DNA"</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        .container {
+            height: 100vh;
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            scroll-behavior: smooth;
+        }
+
+        /* 动态GAME文字背景 */
+        .game-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .game-text-container {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(-25%);
+        }
+
+        .game-row {
+            display: flex;
+            font-size: 8vw;
+            font-weight: 900;
+            line-height: 0.8;
+            color: #ff0040;
+            opacity: 0.1;
+            white-space: nowrap;
+            animation: scrollText 20s linear infinite;
+        }
+
+        .game-row:nth-child(even) {
+            animation-direction: reverse;
+            animation-duration: 25s;
+        }
+
+        .game-row:nth-child(3n) {
+            animation-duration: 30s;
+        }
+
+        @keyframes scrollText {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        /* 遮罩效果 */
+        .mask-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ff0040;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 1.5s cubic-bezier(0.7, 0, 0.3, 1);
+            cursor: pointer;
+        }
+
+        .mask-overlay.opening {
+            clip-path: ellipse(0% 0% at 50% 50%);
+        }
+
+        .main-game-text {
+            font-size: 15vw;
+            font-weight: 900;
+            color: #000;
+            letter-spacing: 0.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulseText 2s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 加载状态 */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff0040;
+            font-size: 18px;
+            z-index: 1000;
+        }
+
+        .error {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff0040;
+            font-size: 18px;
+            z-index: 1000;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff0040;
+        }
+
+        /* 第一个section - 漂浮词汇区域 */
+        .floating-section {
+            height: 100vh;
+            position: relative;
+            scroll-snap-align: start;
+            z-index: 5;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        .floating-frame {
+            width: 90%;
+            height: 75%;
+            position: absolute;
+            top: 12.5%;
+            left: 5%;
+            border: 3px solid #ff0040;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 0, 64, 0.1);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.5s ease;
+        }
+
+        .floating-frame.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .floating-word {
+            position: absolute;
+            padding: 16px 32px;
+            background: rgba(255, 0, 64, 0.9);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 0, 64, 0.3);
+            user-select: none;
+            z-index: 10;
+            border: 2px solid #fff;
+        }
+
+        .floating-word:hover {
+            transform: scale(1.5);
+            background: #ff0040;
+            box-shadow: 0 8px 30px rgba(255, 0, 64, 0.5);
+            z-index: 100;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.95);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+            max-width: 300px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+            border: 2px solid #ff0040;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .tooltip h3 {
+            margin-bottom: 8px;
+            color: #ff0040;
+            font-size: 16px;
+        }
+
+        .tooltip .scenario {
+            margin-top: 8px;
+            font-style: italic;
+            color: #ccc;
+        }
+
+        .title {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff0040;
+            font-size: 2.2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateX(-50%) translateY(-30px);
+            transition: all 1.5s ease 0.5s;
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.2;
+        }
+
+        .title.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff0040;
+            font-size: 16px;
+            animation: bounce 2s infinite;
+            opacity: 0;
+            transition: opacity 1.5s ease 1s;
+        }
+
+        .scroll-hint.visible {
+            opacity: 1;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* 第二个section - 搜索区域 */
+        .search-section {
+            height: 100vh;
+            scroll-snap-align: start;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 5;
+            position: relative;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .search-title {
+            color: #ff0040;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 20px 60px 20px 20px;
+            font-size: 18px;
+            border: 2px solid #ff0040;
+            border-radius: 50px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            outline: none;
+            transition: all 0.3s ease;
+            color: #fff;
+        }
+
+        .search-input::placeholder {
+            color: #ccc;
+        }
+
+        .search-input:focus {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 30px rgba(255, 0, 64, 0.3);
+            border-color: #fff;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff0040;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #fff;
+            color: #ff0040;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .search-results {
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #ff0040;
+        }
+
+        .search-result-item {
+            padding: 15px;
+            border-bottom: 1px solid #ff0040;
+            text-align: left;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-term {
+            font-weight: bold;
+            color: #ff0040;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .search-result-definition {
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .search-result-scenario {
+            color: #ccc;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-game-text {
+                font-size: 20vw;
+                letter-spacing: 0.2em;
+            }
+
+            .subtitle-text {
+                font-size: 4vw;
+            }
+
+            .title, .search-title {
+                font-size: 1.8rem;
+            }
+
+            .floating-frame {
+                width: 95%;
+                left: 2.5%;
+            }
+
+            .search-input {
+                font-size: 16px;
+                padding: 15px 50px 15px 15px;
+            }
+
+            .game-row {
+                font-size: 12vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态GAME背景 -->
+    <div class="game-background">
+        <div class="game-text-container">
+            <div class="game-row">GAME GAME GAME GAME GAME GAME GAME GAME GAME GAME</div>
+            <div class="game-row">GAME GAME GAME GAME GAME GAME GAME GAME GAME GAME</div>
+            <div class="game-row">GAME GAME GAME GAME GAME GAME GAME GAME GAME GAME</div>
+            <div class="game-row">GAME GAME GAME GAME GAME GAME GAME GAME GAME GAME</div>
+            <div class="game-row">GAME GAME GAME GAME GAME GAME GAME GAME GAME GAME</div>
+            <div class="game-row">GAME GAME GAME GAME GAME GAME GAME GAME GAME GAME</div>
+            <div class="game-row">GAME GAME GAME GAME GAME GAME GAME GAME GAME GAME</div>
+            <div class="game-row">GAME GAME GAME GAME GAME GAME GAME GAME GAME GAME</div>
+        </div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="mask-overlay" id="maskOverlay">
+        <div class="main-game-text">GAME</div>
+    </div>
+
+    <!-- 加载和错误提示 -->
+    <div class="loading" id="loadingIndicator" style="display: none;">
+        正在加载游戏词典数据...
+    </div>
+    <div class="error" id="errorIndicator" style="display: none;">
+        <div>无法加载数据文件</div>
+        <div style="margin-top: 10px; font-size: 14px;">请确保 assets/data.json 文件存在并可访问</div>
+    </div>
+
+    <div class="container" id="container">
+        <!-- 第一个section: 漂浮词汇区域 -->
+        <section class="floating-section">
+            <h1 class="title" id="title">赛博词典：游戏场景如何塑造我们的"黑话DNA"</h1>
+            <div class="floating-frame" id="floatingFrame">
+                <!-- 漂浮的词汇将通过JavaScript动态生成 -->
+            </div>
+
+            <div class="scroll-hint" id="scrollHint">↓ 共<span id="termCount">0</span>个游戏术语 | 向下滑动搜索 | 鼠标悬停查看详情 ↓</div>
+        </section>
+
+        <!-- 第二个section: 搜索区域 -->
+        <section class="search-section">
+            <div class="search-container">
+                <h2 class="search-title">搜索游戏黑话</h2>
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="输入游戏黑话进行搜索...">
+                    <button class="search-btn" id="searchBtn">🔍</button>
+                </div>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 提示框 -->
+    <div class="tooltip" id="tooltip">
+        <h3 id="tooltipTerm"></h3>
+        <div id="tooltipDefinition"></div>
+        <div class="scenario" id="tooltipScenario"></div>
+    </div>
+
+    <script>
+        // 全局变量用于存储从JSON加载的数据
+        let gamingSlangData = [];
+
+        // 数据加载器类
+        class DataLoader {
+            constructor() {
+                this.loadingIndicator = document.getElementById('loadingIndicator');
+                this.errorIndicator = document.getElementById('errorIndicator');
+                this.termCount = document.getElementById('termCount');
+            }
+
+            async loadData() {
+                this.showLoading();
+
+                try {
+                    const response = await fetch('assets/data.json');
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    // 验证数据格式
+                    if (!Array.isArray(data) || data.length === 0) {
+                        throw new Error('Invalid data format');
+                    }
+
+                    // 验证每个数据项是否包含必要字段
+                    for (const item of data) {
+                        if (!item.term || !item.definition || !item.scenario) {
+                            throw new Error('Missing required fields in data');
+                        }
+                    }
+
+                    gamingSlangData = data;
+                    this.updateTermCount(data.length);
+                    this.hideLoading();
+                    return data;
+
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    this.showError();
+                    throw error;
+                }
+            }
+
+            showLoading() {
+                this.loadingIndicator.style.display = 'block';
+                this.errorIndicator.style.display = 'none';
+            }
+
+            hideLoading() {
+                this.loadingIndicator.style.display = 'none';
+            }
+
+            showError() {
+                this.loadingIndicator.style.display = 'none';
+                this.errorIndicator.style.display = 'block';
+            }
+
+            updateTermCount(count) {
+                this.termCount.textContent = count;
+            }
+        }
+
+        class IntroAnimation {
+            constructor() {
+                this.maskOverlay = document.getElementById('maskOverlay');
+                this.container = document.getElementById('container');
+                this.title = document.getElementById('title');
+                this.floatingFrame = document.getElementById('floatingFrame');
+                this.scrollHint = document.getElementById('scrollHint');
+                this.init();
+            }
+
+            init() {
+                // 添加点击事件监听器到遮罩层
+                this.maskOverlay.addEventListener('click', () => {
+                    this.startAnimation();
+                });
+
+                // 监听滚动事件
+                this.container.addEventListener('scroll', () => {
+                    this.handleScroll();
+                });
+            }
+
+            startAnimation() {
+                // 遮罩向内收缩
+                this.maskOverlay.classList.add('opening');
+
+                // 1.5秒后显示内容
+                setTimeout(() => {
+                    this.maskOverlay.style.display = 'none';
+                    this.showContent();
+                }, 1500);
+            }
+
+            showContent() {
+                this.title.classList.add('visible');
+                this.floatingFrame.classList.add('visible');
+                this.scrollHint.classList.add('visible');
+            }
+
+            handleScroll() {
+                const scrollPercent = this.container.scrollTop / this.container.scrollHeight;
+                // 根据滚动调整背景透明度
+                const gameRows = document.querySelectorAll('.game-row');
+                gameRows.forEach(row => {
+                    row.style.opacity = Math.min(0.3, scrollPercent * 2);
+                });
+            }
+        }
+
+        class FloatingWordsAnimation {
+            constructor() {
+                this.frame = document.getElementById('floatingFrame');
+                this.tooltip = document.getElementById('tooltip');
+                this.words = [];
+                this.dataReady = false;
+            }
+
+            async init() {
+                // 等待数据加载完成
+                while (gamingSlangData.length === 0) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                this.dataReady = true;
+
+                // 等待frame可见后再创建词汇
+                setTimeout(() => {
+                    this.createFloatingWords();
+                    this.startAnimation();
+                    this.bindEvents();
+                }, 2000);
+            }
+
+            createFloatingWords() {
+                if (!this.frame.offsetWidth || !this.dataReady) return;
+
+                const frameWidth = this.frame.offsetWidth;
+                const frameHeight = this.frame.offsetHeight;
+                const centerX = frameWidth / 2;
+                const centerY = frameHeight / 2;
+
+                // 椭圆参数
+                const ellipseRadiusX = frameWidth * 0.35; // 椭圆横轴半径
+                const ellipseRadiusY = frameHeight * 0.35;  // 椭圆纵轴半径
+
+                gamingSlangData.forEach((data, index) => {
+                    const wordElement = document.createElement('div');
+                    wordElement.className = 'floating-word';
+                    wordElement.textContent = data.term;
+                    wordElement.dataset.index = index;
+
+                    // 椭圆分布算法
+                    const angle = (index / gamingSlangData.length) * 2 * Math.PI;
+                    const randomRadius = 0.3 + Math.random() * 0.7; // 0.3到1之间的随机半径比例
+
+                    // 计算椭圆上的位置
+                    const ellipseX = centerX + Math.cos(angle) * ellipseRadiusX * randomRadius;
+                    const ellipseY = centerY + Math.sin(angle) * ellipseRadiusY * randomRadius;
+
+                    // 添加小幅度随机偏移
+                    const offsetX = (Math.random() - 0.5) * 60;
+                    const offsetY = (Math.random() - 0.5) * 60;
+
+                    const x = Math.max(20, Math.min(ellipseX + offsetX, frameWidth - 100));
+                    const y = Math.max(20, Math.min(ellipseY + offsetY, frameHeight - 50));
+
+                    wordElement.style.left = x + 'px';
+                    wordElement.style.top = y + 'px';
+
+                    this.frame.appendChild(wordElement);
+
+                    // 存储词汇信息 - 减慢移动速度
+                    this.words.push({
+                        element: wordElement,
+                        x: x,
+                        y: y,
+                        vx: (Math.random() - 0.5) * 0.5, // 大大减慢速度
+                        vy: (Math.random() - 0.5) * 0.5,
+                        data: data,
+                        originalX: ellipseX,
+                        originalY: ellipseY,
+                        maxDistance: 40 // 限制移动距离
+                    });
+                });
+            }
+
+            startAnimation() {
+                const animate = () => {
+                    this.words.forEach(word => {
+                        if (!word.element.offsetParent) return;
+
+                        // 更新位置
+                        word.x += word.vx;
+                        word.y += word.vy;
+
+                        // 计算与原点的距离
+                        const distanceX = word.x - word.originalX;
+                        const distanceY = word.y - word.originalY;
+                        const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+                        // 如果距离原点太远，反转方向
+                        if (distance > word.maxDistance) {
+                            word.vx *= -1;
+                            word.vy *= -1;
+                        }
+
+                        // 边界检测
+                        if (word.x <= 20 || word.x >= this.frame.offsetWidth - word.element.offsetWidth - 20) {
+                            word.vx *= -1;
+                        }
+                        if (word.y <= 20 || word.y >= this.frame.offsetHeight - word.element.offsetHeight - 20) {
+                            word.vy *= -1;
+                        }
+
+                        // 确保在边界内
+                        word.x = Math.max(20, Math.min(word.x, this.frame.offsetWidth - word.element.offsetWidth - 20));
+                        word.y = Math.max(20, Math.min(word.y, this.frame.offsetHeight - word.element.offsetHeight - 20));
+
+                        // 应用位置
+                        word.element.style.left = word.x + 'px';
+                        word.element.style.top = word.y + 'px';
+                    });
+
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+
+            bindEvents() {
+                this.words.forEach(word => {
+                    word.element.addEventListener('mouseenter', (e) => {
+                        this.showTooltip(e, word.data);
+                    });
+
+                    word.element.addEventListener('mouseleave', () => {
+                        this.hideTooltip();
+                    });
+
+                    word.element.addEventListener('mousemove', (e) => {
+                        this.updateTooltipPosition(e);
+                    });
+                });
+            }
+
+            showTooltip(event, data) {
+                document.getElementById('tooltipTerm').textContent = data.term;
+                document.getElementById('tooltipDefinition').textContent = data.definition;
+                document.getElementById('tooltipScenario').textContent = data.scenario;
+
+                this.updateTooltipPosition(event);
+                this.tooltip.classList.add('visible');
+            }
+
+            hideTooltip() {
+                this.tooltip.classList.remove('visible');
+            }
+
+            updateTooltipPosition(event) {
+                const x = event.clientX + 10;
+                const y = event.clientY - 10;
+
+                this.tooltip.style.left = x + 'px';
+                this.tooltip.style.top = y + 'px';
+            }
+        }
+
+        class SearchFunction {
+            constructor() {
+                this.searchInput = document.getElementById('searchInput');
+                this.searchBtn = document.getElementById('searchBtn');
+                this.searchResults = document.getElementById('searchResults');
+                this.dataReady = false;
+                this.bindEvents();
+            }
+
+            async init() {
+                // 等待数据加载完成
+                while (gamingSlangData.length === 0) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                this.dataReady = true;
+            }
+
+            bindEvents() {
+                this.searchBtn.addEventListener('click', () => this.performSearch());
+                this.searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.performSearch();
+                    }
+                });
+                this.searchInput.addEventListener('input', () => this.performSearch());
+            }
+
+            performSearch() {
+                if (!this.dataReady) {
+                    this.searchResults.innerHTML = '<div class="search-result-item">数据加载中，请稍候...</div>';
+                    this.searchResults.style.display = 'block';
+                    return;
+                }
+
+                const query = this.searchInput.value.trim().toLowerCase();
+
+                if (!query) {
+                    this.searchResults.style.display = 'none';
+                    return;
+                }
+
+                const results = gamingSlangData.filter(item =>
+                    item.term.toLowerCase().includes(query) ||
+                    item.definition.toLowerCase().includes(query) ||
+                    item.scenario.toLowerCase().includes(query)
+                );
+
+                this.displayResults(results);
+            }
+
+            displayResults(results) {
+                if (results.length === 0) {
+                    this.searchResults.innerHTML = '<div class="search-result-item">未找到相关结果</div>';
+                } else {
+                    this.searchResults.innerHTML = results.map(item => `
+                        <div class="search-result-item">
+                            <div class="search-result-term">${item.term}</div>
+                            <div class="search-result-definition">${item.definition}</div>
+                            <div class="search-result-scenario">${item.scenario}</div>
+                        </div>
+                    `).join('');
+                }
+
+                this.searchResults.style.display = 'block';
+            }
+        }
+
+        // 应用初始化
+        class App {
+            constructor() {
+                this.dataLoader = new DataLoader();
+                this.introAnimation = null;
+                this.floatingWordsAnimation = null;
+                this.searchFunction = null;
+            }
+
+            async init() {
+                try {
+                    // 首先加载数据
+                    await this.dataLoader.loadData();
+
+                    // 数据加载成功后初始化其他组件
+                    this.introAnimation = new IntroAnimation();
+                    this.floatingWordsAnimation = new FloatingWordsAnimation();
+                    this.searchFunction = new SearchFunction();
+
+                    // 初始化需要数据的组件
+                    await this.floatingWordsAnimation.init();
+                    await this.searchFunction.init();
+
+                } catch (error) {
+                    console.error('Failed to initialize app:', error);
+                    // 即使数据加载失败，也要初始化基础动画
+                    this.introAnimation = new IntroAnimation();
+                }
+            }
+        }
+
+        // 启动应用
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new App();
+            app.init();
+        });
+    </script>
+</body>
+</html>

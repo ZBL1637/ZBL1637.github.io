@@ -1,0 +1,102 @@
+[
+    {
+        "term": "GG",
+        "definition": "Good Game的缩写，表示游戏结束或认输",
+        "scenario": "使用场景：游戏结束时表示对对手的尊重"
+    },
+    {
+        "term": "AFK",
+        "definition": "Away From Keyboard的缩写，表示暂时离开",
+        "scenario": "使用场景：需要临时离开游戏时告知队友"
+    },
+    {
+        "term": "Noob",
+        "definition": "新手玩家，技术不佳的玩家",
+        "scenario": "使用场景：形容游戏技术较差的玩家（有时带贬义）"
+    },
+    {
+        "term": "OP",
+        "definition": "Over Powered的缩写，表示过于强大",
+        "scenario": "使用场景：形容某个角色、装备或技能过于强势"
+    },
+    {
+        "term": "Nerf",
+        "definition": "削弱某个角色或装备的能力",
+        "scenario": "使用场景：游戏平衡性调整，降低过强内容的威力"
+    },
+    {
+        "term": "Buff",
+        "definition": "增强某个角色或装备的能力",
+        "scenario": "使用场景：游戏平衡性调整，提升较弱内容的威力"
+    },
+    {
+        "term": "Meta",
+        "definition": "当前版本最优策略或最强角色组合",
+        "scenario": "使用场景：讨论当前游戏环境的主流玩法"
+    },
+    {
+        "term": "Carry",
+        "definition": "带领团队获胜的核心玩家",
+        "scenario": "使用场景：MOBA游戏中承担主要输出责任的角色"
+    },
+    {
+        "term": "Feed",
+        "definition": "频繁死亡给对手送经验和金币",
+        "scenario": "使用场景：批评队友操作失误导致敌方获得优势"
+    },
+    {
+        "term": "Gank",
+        "definition": "多人合作击杀敌方单独玩家",
+        "scenario": "使用场景：MOBA游戏中的战术配合"
+    },
+    {
+        "term": "Last Hit",
+        "definition": "最后一击击杀小兵获得金币",
+        "scenario": "使用场景：MOBA游戏中的基础补刀技巧"
+    },
+    {
+        "term": "Kite",
+        "definition": "保持距离进行攻击的战术",
+        "scenario": "使用场景：远程角色对抗近战角色时使用"
+    },
+    {
+        "term": "Proc",
+        "definition": "装备或技能的特殊效果触发",
+        "scenario": "使用场景：讨论装备特效的触发概率和时机"
+    },
+    {
+        "term": "DPS",
+        "definition": "Damage Per Second，每秒伤害输出",
+        "scenario": "使用场景：衡量角色或装备的输出能力"
+    },
+    {
+        "term": "Tank",
+        "definition": "承受伤害保护队友的前排角色",
+        "scenario": "使用场景：团队配合中的坦克位置"
+    },
+    {
+        "term": "ADC",
+        "definition": "Attack Damage Carry，物理伤害核心",
+        "scenario": "使用场景：MOBA游戏中的远程物理输出位置"
+    },
+    {
+        "term": "Support",
+        "definition": "辅助队友的支援角色",
+        "scenario": "使用场景：提供治疗、保护或控制的辅助位置"
+    },
+    {
+        "term": "Jungle",
+        "definition": "野区或在野区发育的角色",
+        "scenario": "使用场景：MOBA游戏中的野区位置和打野角色"
+    },
+    {
+        "term": "Farm",
+        "definition": "通过击杀小兵或野怪积累经验和金币",
+        "scenario": "使用场景：游戏前期的发育阶段"
+    },
+    {
+        "term": "Combo",
+        "definition": "连续技能组合攻击",
+        "scenario": "使用场景：角色技能的最优释放顺序"
+    }
+]
