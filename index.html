@@ -327,6 +327,24 @@
             margin-bottom: 80px;
         }
 
+        /* Chart Conclusion Styles */
+        .chart-conclusion {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 10px;
+            color: var(--white);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .chart-conclusion h3 {
+            color: var(--primary-green);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
         /* Chart Animation Styles */
         .chart-item {
             opacity: 0;
@@ -1617,6 +1635,33 @@
             margin-bottom: 30px;
         }
 
+        .chart-conclusion {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .chart-conclusion h3 {
+            color: var(--primary-green);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-conclusion p {
+            color: var(--white);
+            line-height: 1.6;
+            font-size: 1em;
+            margin: 0;
+            text-align: justify;
+            opacity: 0.9;
+        }
+
         .chart-item:last-child {
             margin-bottom: 0;
         }
@@ -1748,10 +1793,10 @@
         <nav class="nav">
             <a href="#" class="logo">GAME SLANG</a>
             <ul class="nav-links">
-                <li><a href="index.html">首页</a></li>
-                <li><a href="DataAnalysis.html">数据分析</a></li>
-                <li><a href="AITalking.html">黑话查询</a></li>
-                <li><a href="charts/charts.html">图表可视化</a></li>
+                <li><a href="#home">开开首页</a></li>
+                <li><a href="#visualization">读读数据</a></li>
+                <li><a href="#search-section">查查黑话</a></li>
+                <li><a href="#charts-section">看看图表</a></li>
             </ul>
         </nav>
     </header>
@@ -1803,7 +1848,7 @@
             <div class="viz-container">
                 <!-- 第一个Section: 漂浮词汇区域 -->
                 <div class="floating-words-section">
-                    <h2 class="section-title">黑话漂流瓶</h2>
+                    <h2 class="section-title">你知道这些游戏黑话吗？</h2>
                     <div class="floating-container" id="floatingContainer">
                         <div class="floating-words" id="floatingWords"></div>
                     </div>
@@ -1811,7 +1856,7 @@
                 </div>
 
                 <!-- 第二个Section: AI智能查询 -->
-                <div class="search-section">
+                <div class="search-section" id="search-section">
                     <div class="search-interface">
                         <h3 class="search-title">🤖 AI智能查询</h3>
                         <p class="search-subtitle">输入游戏术语，AI为您提供详细解释和使用场景</p>
@@ -1852,28 +1897,42 @@
                 </div>
 
                 <!-- 数据可视化图表区域 -->
-                <div class="charts-section">
-                    <h2 class="section-title">行为解码流形</h2>
+                <div class="charts-section" id="charts-section">
+                    <h2 class="section-title">游戏黑话背后的数据是怎么样的？</h2>
                     <div class="charts-container">
                         <div class="chart-row">
                             <div class="chart-item">
                                 <div id="chart1" style="width: 100%; height: 600px;"></div>
+                                <div class="chart-conclusion">
+                                    <h3>📊 数据解读</h3>
+                                    <p>从游戏黑话类型使用频率我们不难发现，行为类术语占据各大游戏的主要术语使用。但个别游戏如”原神“”鸣朝“之类的RPG游戏等职业类术语占据较大使用份额</p>
+                                </div>
                             </div>
                             <div class="chart-item">
                                 <div id="chart2" style="width: 100%; height: 1800px;"></div>
+                                <div class="chart-conclusion">
+                                    <h3>📊 数据解读</h3>
+                                    <p>从各游戏术语分类我们可以看出，各游戏主要术语还是中性，主要侧重于交流，行为等等。但不排除正向或负向术语更多的存在，这与游戏性质与游戏玩家间的氛围有着极大关系</p>
+                                </div>
                             </div>
                         </div>
                         <div class="chart-row">
                             <div class="chart-item">
                                 <div id="chart3" style="width: 100%; height: 700px;"></div>
+                                <div class="chart-conclusion">
+                                    <h3>📊 数据解读</h3>
+                                    <p>从类别情感雷达图中我们可以发现，大家的负面词语更多的是关于机制，看来大家共同还是攻击官方机制不平衡或者bug影响游戏体验。</p>
+                                </div>
                             </div>
                             <div class="chart-item">
                                 <div id="chart4" style="width: 100%; height: 1800px;"></div>
+                                <div class="chart-conclusion">
+                                </div>
                             </div>
                         </div>
                         <div class="chart-row">
                             <div class="chart-item">
-                                <h2 style="color: #ffffff; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 30px; margin-top: 0;">使用频率</h2>
+                                <h2 style="color: #ffffff; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 30px; margin-top: 0;">游戏类别使用随时间怎么变化的呢？</h2>
                                 <div class="flourish-embed flourish-bar-chart-race" data-src="visualisation/23800018">
                                     <script src="https://public.flourish.studio/resources/embed.js"></script>
                                     <noscript>
@@ -2040,7 +2099,7 @@
                 <div class="timeline-wrapper">
                 <!-- Timeline Section -->
                 <div class="timeline-section">
-                    <h2 class="timeline-title">演变时间线（1980s-2020s）</h2>
+                    <h2 class="timeline-title">游戏黑话是如何一步步进化的？</h2>
                     <div class="timeline-container">
                         <div class="timeline-line"></div>
                         
